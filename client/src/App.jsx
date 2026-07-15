@@ -7,9 +7,11 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import SubmitForm from './pages/SubmitForm';
 import './App.css';
+import {toast,ToastContainer} from "react-toastify"
 
 function App() {
   return (
+<>
     <Router>
       <Navbar />
       <Routes>
@@ -20,6 +22,9 @@ function App() {
       </Routes>
       <Footer />
     </Router>
+    <ToastContainer/>
+</>
+    
   );
 }
 

@@ -7,27 +7,14 @@ import {
 
 export default function SubmitForm() {
   const [formData, setFormData] = useState({
-    projectName: '',
+    developerName: '',
+    projectTiltle:'',
     description: '',
-    provider: 'cloudflare',
-    tier: 'pro',
-    modules: ['database', 'caching'],
+    hostedUrl:''
+   
   });
 
-  const [file, setFile] = useState(null);
-  const [isDragActive, setIsDragActive] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [submitStep, setSubmitStep] = useState(0); // 0: idle, 1: connecting, 2: provisioning, 3: deploying, 4: success
-  const [copied, setCopied] = useState(false);
-  const fileInputRef = useRef(null);
-
-  const stepMessages = [
-    '',
-    'Connecting to regional edge gateway...',
-    'Allocating CPU threads & storage volumes...',
-    'Injecting modules & compiling index schema...',
-  ];
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,57 +23,8 @@ export default function SubmitForm() {
     }
   };
 
-  const handleModuleChange = (module) => {
-    setFormData((prev) => {
-      const active = prev.modules.includes(module);
-      const updated = active 
-        ? prev.modules.filter((m) => m !== module) 
-        : [...prev.modules, module];
-      return { ...prev, modules: updated };
-    });
-    if (errors.modules) {
-      setErrors((prev) => ({ ...prev, modules: '' }));
-    }
-  };
 
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setIsDragActive(true);
-    } else if (e.type === "dragleave") {
-      setIsDragActive(false);
-    }
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDragActive(false);
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const droppedFile = e.dataTransfer.files[0];
-      if (droppedFile.name.endsWith('.json') || droppedFile.name.endsWith('.yaml') || droppedFile.name.endsWith('.yml')) {
-        setFile(droppedFile);
-        setErrors((prev) => ({ ...prev, file: '' }));
-      } else {
-        setErrors((prev) => ({ ...prev, file: 'Only JSON or YAML schema configurations are supported' }));
-      }
-    }
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const selectedFile = e.target.files[0];
-      setFile(selectedFile);
-      setErrors((prev) => ({ ...prev, file: '' }));
-    }
-  };
-
-  const removeFile = () => {
-    setFile(null);
-    if (fileInputRef.current) fileInputRef.current.value = '';
-  };
+ 
 
   const handleValidate = () => {
     const tempErrors = {};
@@ -114,33 +52,32 @@ export default function SubmitForm() {
 
     setSubmitStep(1);
 
-    // Step 1: Gateway
-    setTimeout(() => {
-      setSubmitStep(2);
-      // Step 2: CPU allocation
-      setTimeout(() => {
-        setSubmitStep(3);
-        // Step 3: Modules compilation
-        setTimeout(() => {
-          setSubmitStep(4);
-        }, 1200);
-      }, 1200);
-    }, 1000);
-  };
+  //   // Step 1: Gateway
+  //   setTimeout(() => {
+  //     setSubmitStep(2);
+  //     // Step 2: CPU allocation
+  //     setTimeout(() => {
+  //       setSubmitStep(3);
+  //       // Step 3: Modules compilation
+  //       setTimeout(() => {
+  //         setSubmitStep(4);
+  //       }, 1200);
+  //     }, 1200);
+  //   }, 1000);
+  // };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(`aura-node-${formData.projectName}-cf87`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  // const copyToClipboard = () => {
+  //   navigator.clipboard.writeText(`aura-node-${formData.projectName}-cf87`);
+  //   setCopied(true);
+  //   setTimeout(() => setCopied(false), 2000);
+  // };
 
   const resetForm = () => {
     setFormData({
-      projectName: '',
-      description: '',
-      provider: 'cloudflare',
-      tier: 'pro',
-      modules: ['database', 'caching'],
+      developerName: '',
+    projectTiltle:'',
+    description: '',
+    hostedUrl:''
     });
     setFile(null);
     setSubmitStep(0);
@@ -307,23 +244,37 @@ export default function SubmitForm() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Project Name */}
-          <div className="form-group">
-            <label className="form-label" htmlFor="projectName">Project Identifier</label>
+
+           {/* developer name */}
+ <div className="form-group">
+            <label className="form-label" htmlFor="projectName">Developer Name</label>
             <input
               type="text"
-              id="projectName"
-              name="projectName"
-              value={formData.projectName}
+              id="developerName"
+              name="developerName"
+              value={formData.developerName}
               onChange={handleInputChange}
               className="form-control"
-              placeholder="e.g. telemetry-api-node"
+              placeholder="e.g. developerName"
             />
-            <span style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Only lowercase alphanumeric and hyphens. Generated domain will be: <code>{formData.projectName ? formData.projectName : 'project'}-node.auraportal.net</code>
-            </span>
-            {errors.projectName && <span className="form-error"><AlertCircle size={12} /> {errors.projectName}</span>}
+            
+           
           </div>
+
+          {/* Project Name */}
+         <div className="form-group">
+            <label className="form-label" htmlFor="projectTiltle">Project tiltle</label>
+            <input
+              type="text"
+              id="projectTiltle"
+              name="projectTiltle"
+              value={formData.projectTiltle}
+              onChange={handleInputChange}
+              className="form-control"
+              placeh older="e.g. projectTiltle"
+            />
+            
+</div>
 
           {/* Description */}
           <div className="form-group">
@@ -339,187 +290,22 @@ export default function SubmitForm() {
               style={{ resize: 'vertical' }}
             />
           </div>
-
-          <div className="grid-cols-2">
-            {/* Edge Provider */}
-            <div className="form-group">
-              <label className="form-label" htmlFor="provider">Regional Edge Provider</label>
-              <select
-                id="provider"
-                name="provider"
-                value={formData.provider}
-                onChange={handleInputChange}
-                className="form-control"
-                style={{ cursor: 'pointer' }}
-              >
-                <option value="cloudflare">Cloudflare Pages Edge</option>
-                <option value="aws">Amazon Web Services (us-east-1)</option>
-                <option value="gcp">Google Cloud Platform (europe-west3)</option>
-                <option value="azure">Microsoft Azure (eastasia)</option>
-              </select>
-            </div>
-
-            {/* Pricing Tier */}
-            <div className="form-group">
-              <label className="form-label">Resource Tier</label>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <label className="custom-radio" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem', color: formData.tier === 'sandbox' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                  <input
-                    type="radio"
-                    name="tier"
-                    value="sandbox"
-                    checked={formData.tier === 'sandbox'}
-                    onChange={handleInputChange}
-                    style={{ accentColor: 'var(--primary)' }}
-                  />
-                  <span>Sandbox (Free limits)</span>
-                </label>
-                <label className="custom-radio" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem', color: formData.tier === 'pro' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                  <input
-                    type="radio"
-                    name="tier"
-                    value="pro"
-                    checked={formData.tier === 'pro'}
-                    onChange={handleInputChange}
-                    style={{ accentColor: 'var(--primary)' }}
-                  />
-                  <span>Professional ($15/mo)</span>
-                </label>
-                <label className="custom-radio" style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.9rem', color: formData.tier === 'enterprise' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                  <input
-                    type="radio"
-                    name="tier"
-                    value="enterprise"
-                    checked={formData.tier === 'enterprise'}
-                    onChange={handleInputChange}
-                    style={{ accentColor: 'var(--primary)' }}
-                  />
-                  <span>Enterprise ($99/mo)</span>
-                </label>
-              </div>
-            </div>
+          {/* hosted url */}
+           <div className="form-group">
+            <label className="form-label" htmlFor="hostedUrl">hosted url</label>
+            <textarea
+              id="hostedUrl"
+              name="hostedUrl"
+              value={formData.hostedUrl}
+              onChange={handleInputChange}
+              className="form-control"
+              placeholder="hostedUrl"
+              rows={3}
+              style={{ resize: 'vertical' }}
+            />
           </div>
 
-          {/* Active Modules */}
-          <div className="form-group" style={{ marginTop: '16px' }}>
-            <label className="form-label">Integrate Dashboard Modules</label>
-            <div className="grid-cols-2" style={{ gap: '12px' }}>
-              <label className="custom-checkbox glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: formData.modules.includes('database') ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid var(--border-color)', background: formData.modules.includes('database') ? 'rgba(139, 92, 246, 0.05)' : 'none', transition: 'var(--transition)' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.modules.includes('database')}
-                  onChange={() => handleModuleChange('database')}
-                  style={{ accentColor: 'var(--primary)' }}
-                />
-                <div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: '600' }}>PostgreSQL Database</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Persistent ACID storage</div>
-                </div>
-              </label>
-
-              <label className="custom-checkbox glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: formData.modules.includes('caching') ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid var(--border-color)', background: formData.modules.includes('caching') ? 'rgba(139, 92, 246, 0.05)' : 'none', transition: 'var(--transition)' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.modules.includes('caching')}
-                  onChange={() => handleModuleChange('caching')}
-                  style={{ accentColor: 'var(--primary)' }}
-                />
-                <div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: '600' }}>Redis Cache</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Sub-millisecond keyspace</div>
-                </div>
-              </label>
-
-              <label className="custom-checkbox glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: formData.modules.includes('cron') ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid var(--border-color)', background: formData.modules.includes('cron') ? 'rgba(139, 92, 246, 0.05)' : 'none', transition: 'var(--transition)' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.modules.includes('cron')}
-                  onChange={() => handleModuleChange('cron')}
-                  style={{ accentColor: 'var(--primary)' }}
-                />
-                <div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: '600' }}>Edge Scheduler</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Cron job configurations</div>
-                </div>
-              </label>
-
-              <label className="custom-checkbox glass-panel" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '8px', cursor: 'pointer', border: formData.modules.includes('analytics') ? '1px solid rgba(139, 92, 246, 0.4)' : '1px solid var(--border-color)', background: formData.modules.includes('analytics') ? 'rgba(139, 92, 246, 0.05)' : 'none', transition: 'var(--transition)' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.modules.includes('analytics')}
-                  onChange={() => handleModuleChange('analytics')}
-                  style={{ accentColor: 'var(--primary)' }}
-                />
-                <div>
-                  <div style={{ fontSize: '0.875rem', fontWeight: '600' }}>Event Analytics</div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Telemetry event streaming</div>
-                </div>
-              </label>
-            </div>
-            {errors.modules && <span className="form-error"><AlertCircle size={12} /> {errors.modules}</span>}
-          </div>
-
-          {/* Config Schema Upload */}
-          <div className="form-group" style={{ marginTop: '24px' }}>
-            <label className="form-label">Deployment Schema Schema File (Optional)</label>
-            {!file ? (
-              <div 
-                className={`dropzone glass-panel ${isDragActive ? 'drag-active' : ''}`}
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current.click()}
-                style={{
-                  border: isDragActive ? '2px dashed var(--secondary)' : '2px dashed var(--border-color)',
-                  borderRadius: '12px',
-                  padding: '30px 20px',
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  background: isDragActive ? 'rgba(6, 182, 212, 0.05)' : 'rgba(255, 255, 255, 0.01)',
-                  transition: 'var(--transition)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '8px'
-                }}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={handleFileChange}
-                  accept=".json,.yaml,.yml"
-                  style={{ display: 'none' }}
-                />
-                <Upload size={24} style={{ color: 'var(--text-secondary)' }} />
-                <div>
-                  <p style={{ fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: '500' }}>
-                    Drag & drop file or click to browse
-                  </p>
-                  <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                    Supports schema.json, deployment.yaml, or node.yml (Max 2MB)
-                  </p>
-                </div>
-              </div>
-            ) : (
-              <div className="glass-panel" style={{ padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderRadius: '12px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ background: 'rgba(139, 92, 246, 0.1)', color: 'var(--primary-hover)', width: '36px', height: '36px', borderRadius: '8px', display: 'flex', alignItems: 'center', justify: 'center' }}>
-                    <FileText size={20} />
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{file.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{(file.size/1024).toFixed(1)} KB</div>
-                  </div>
-                </div>
-                <button type="button" onClick={removeFile} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', hover: { color: 'var(--accent)' }, cursor: 'pointer', padding: '6px' }}>
-                  <Trash2 size={18} />
-                </button>
-              </div>
-            )}
-            {errors.file && <span className="form-error"><AlertCircle size={12} /> {errors.file}</span>}
-          </div>
-
+ 
           {/* Submit Button */}
           <button
             type="submit"
@@ -533,4 +319,5 @@ export default function SubmitForm() {
       </div>
     </div>
   );
+}
 }

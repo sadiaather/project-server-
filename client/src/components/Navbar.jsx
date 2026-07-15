@@ -24,10 +24,10 @@ export default function Navbar() {
             Overview
           </NavLink>
           <NavLink to="/login" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            Sign In
+            Log In
           </NavLink>
           <NavLink to="/signup" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-            Register
+            Sgin Up
           </NavLink>
           <NavLink to="/submit-form" className="btn btn-primary nav-cta">
             <span>Get Started</span>
@@ -56,14 +56,14 @@ export default function Navbar() {
             className={({ isActive }) => isActive ? 'nav-mobile-link active' : 'nav-mobile-link'}
             onClick={() => setIsOpen(false)}
           >
-            Sign In
+            Log In
           </NavLink>
           <NavLink 
             to="/signup" 
             className={({ isActive }) => isActive ? 'nav-mobile-link active' : 'nav-mobile-link'}
             onClick={() => setIsOpen(false)}
           >
-            Register
+            Sign Up
           </NavLink>
           <NavLink 
             to="/submit-form" 
